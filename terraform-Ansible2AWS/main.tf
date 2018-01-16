@@ -52,8 +52,52 @@ resource "aws_subnet" "public" {
 }
 
 # Private subnets x2
+resource "aws_subnet" "private1" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.2.0/24"
+	map_public_ip_on_launch = false
+	availability_zone = "us-east-1a"
+
+	tags {
+		Name = "private1"
+	}
+}
+
+resource "aws_subnet" "private2" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.3.0/24"
+	map_public_ip_on_launch = false
+	availability_zone = "us-east-1c"
+
+	tags {
+		Name = "private2"
+	}
+}
+
 # RDS subnet 1
+resource "aws_subnet" "rds_subnet_1" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.4.0/24"
+	map_public_ip_on_launch = false
+	availability_zone = "us-east-1a"
+
+	tags {
+		Name = "rds1"
+	}
+}
+
 # RDS subnet 2
+resource "aws_subnet" "rds_subnet_2" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.5.0/24"
+	map_public_ip_on_launch = false
+	availability_zone = "us-east-1c"
+
+	tags {
+		Name = "rds2"
+	}
+}
+
 # RDS subnet 3
 
 # SECURITY GROUPS
