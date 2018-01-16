@@ -126,9 +126,19 @@ resource "aws_route_table_association" "private2_association" {
 	route_table_id = "${aws_route_table.public_route.id}"
 }
 
+resource "aws_db_subnet_group" "rds_subnetgroup" {
+	name = "rds_subnetgroup"
+	subnet_ids = ["${aws_subnet.rds1.id}", "${aws_subnet.rds2.id}", "${aws_subnet.rds3.id}"]
+
+	tags {
+		Name = "rds_sng"
+	}
+}
 
 # SECURITY GROUPS
-# Public
+# Public sec. group
+
+
 # RDS
 
 # S3 code bucket
