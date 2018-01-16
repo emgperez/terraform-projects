@@ -40,6 +40,17 @@ resource "aws_default_route_table" "private_route" {
 
 # Subnets
 # Public subnets
+resource "aws_subnet" "public" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.1.0/24"
+	map_public_ip_on_launch = true
+	availability_zone = "us-east-1d"
+
+	tags {
+		Name = "public"
+	}
+}
+
 # Private subnets x2
 # RDS subnet 1
 # RDS subnet 2
