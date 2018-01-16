@@ -30,6 +30,14 @@ resource "aws_route_table" "public_route" {
 }
 
 # Private route table
+resource "aws_default_route_table" "private_route" {
+	default_route_table_id = "${aws_vpc.vpc.default_route_table_id}"
+	tags {
+		Name = "private"
+	}
+	
+}
+
 # Subnets
 # Public subnets
 # Private subnets x2
