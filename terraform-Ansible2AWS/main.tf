@@ -115,6 +115,26 @@ resource "aws_subnet" "private2" {
 	}
 }
 
+# S3 VPC Endpoint
+resource "aws_vpc_endpoint" "private-s3" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	service_name = "com.amazonaws.${var.aws_region}.s3"
+	route_table_ids = ["${aws_vpc.vpc.main_route_table_id}", "${aws_route_table.public.id}"]
+	policy = <<POLICY
+	{
+    "Statement": [
+        {
+            "Action": "*",
+            "Effect": "Allow",
+            "Resource": "*",
+            "Principal": "*"
+        }
+    ]
+}
+POLICY
+}
+
+
 # RDS subnet 1
 resource "aws_subnet" "rds_subnet_1" {
 	vpc_id = "${aws_vpc.vpc.id}"
