@@ -282,7 +282,14 @@ resource "aws_db_instance" "db" {
 }
 
 # S3 code bucket
-resource "aws_
+resource "aws_s3_bucket" "code" {
+	bucket = "${var.domain_name}_code111115"
+	acl = "private"
+	force_destroy = true
+	tags {
+		Name = "code bucket"
+	}
+}
 
 
 # Compute
