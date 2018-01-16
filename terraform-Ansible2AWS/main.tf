@@ -99,6 +99,16 @@ resource "aws_subnet" "rds_subnet_2" {
 }
 
 # RDS subnet 3
+resource "aws_subnet" "rds_subnet_3" {
+	vpc_id = "${aws_vpc.vpc.id}"
+	cidr_block = "10.1.6.0/24"
+	map_public_ip_on_launch = false
+	availability_zone = "us-east-1d"
+
+	tags {
+		Name = "rds3"
+	}
+}
 
 # SECURITY GROUPS
 # Public
