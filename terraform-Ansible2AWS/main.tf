@@ -224,6 +224,11 @@ resource "aws_db_instance" "db" {
 
 # Compute
 # Keypair
+resource "aws_key_pair" "auth" {
+	key_name = "${var.key_name}"
+	public_key = "${file(var.public_key.path)}"
+}
+
 # Master dev server (with the initial code and the ansible playbook)
 # LoadBalancer
 # AMI for the dev instance
