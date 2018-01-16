@@ -137,7 +137,36 @@ resource "aws_db_subnet_group" "rds_subnetgroup" {
 
 # SECURITY GROUPS
 # Public sec. group
+resource "aws_security_group" "public" {
+	name = "sg_public"
+	description = "Sec. group used for public and private instances for balancer access"
+	vpc_id = "${aws_vpc.vpc.id}"
 
+	# Rules
+	# SSH access
+	ingress {
+		from_port = 22
+		to_port = 22
+		protocol = "tcp"
+		cidr_blocks = ["${var.localip}"]
+	}
+
+	# HTTP
+	ingress {
+		from_port = 80
+		to_port = 80
+		protocol = "tcp"
+		cidr_blocks = ["0.0.0.0/0"]	
+	}
+
+	# Outbound Internet Access
+	egress {
+		from_port = 0
+		to_port = 0
+		protocol = "-1" # Any protocol
+		cidr_block = ["0.0.0.0/0"]
+	}	
+}
 
 # RDS
 
