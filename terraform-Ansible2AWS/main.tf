@@ -442,7 +442,21 @@ resource "aws_route53_zone" "primary" {
 	delegation_set_id = "${var.delegation_set}"
 }
 
-# www alias
+# www alias to point to ELB
+resource "aws_route53_record" "www" {
+	zone_id = "${aws_route_53_zone.primary.zone_id}"
+	name = "www.${var.domain_name}.com"
+	type = "A" # Alias
+
+	alias {
+		name = "S{aws_elb.prod.dns_name}"
+		zone_id = "${aws_elb.prod.zone_id}"
+		evaluate_target_health = false
+	
+	}
+}
+
+
 # dev alias
 # database record
 
