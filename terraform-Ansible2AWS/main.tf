@@ -405,7 +405,34 @@ resource "aws_launch_configuration" "lc" {
 }
 
 # Autoscaling group
+resource "random_id" "asg" {
+	byte_length = 8
+}
 
+resource "aws_autoscaling_group" "asg" {
+	availability_zones = ["${var.aws_region}a", "${var.aws_region}c"]
+	name = "asg-${aws_launch_configuration.lc.id}"
+	max_size = "${var.asg_max}"
+	min_size = "${var.asg_min}"
+	health_check_grace_period = "${var.asg_grace}"
+	health_check_type = "${var.asg_hct}"
+	desired_capacity = "${var.asg_cap}"
+	force_delete = true
+	load_balancers = ["${aws_elb.prod.id}"]
+	vpc_zone_identifier = ["${aws_subnet.private1.id}", "${aws_subnet.private2.id}"]
+	launch_configuration = "${aws_launch_configuration.lc.name}"
+
+	tag {
+		key = "Name"
+		value = "asg-instance"
+		propagate_at_launch = true
+	
+	}
+	
+	lifecycle {
+		create_before_destroy = true
+	}
+}
 
 # Route53 records
 # Primary zone
