@@ -58,7 +58,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 # Public route table
-resource "aws_route_table" "public_route" {
+resource "aws_route_table" "public" {
 	vpc_id = "${aws_vpc.vpc.id}"
 
 	route {
@@ -71,7 +71,7 @@ resource "aws_route_table" "public_route" {
 }
 
 # Private route table
-resource "aws_default_route_table" "private_route" {
+resource "aws_default_route_table" "private" {
 	default_route_table_id = "${aws_vpc.vpc.default_route_table_id}"
 	tags {
 		Name = "private"
@@ -119,7 +119,7 @@ resource "aws_subnet" "private2" {
 resource "aws_vpc_endpoint" "private-s3" {
 	vpc_id = "${aws_vpc.vpc.id}"
 	service_name = "com.amazonaws.${var.aws_region}.s3"
-	route_table_ids = ["${aws_vpc.vpc.main_route_table_id}", "${aws_route_table.public.id}"]
+	poute_table_ids = ["${aws_vpc.vpc.main_route_table_id}", "${aws_route_table.public.id}"]
 	policy = <<POLICY
 	{
     "Statement": [
@@ -136,7 +136,7 @@ POLICY
 
 
 # RDS subnet 1
-resource "aws_subnet" "rds_subnet_1" {
+resource "aws_subnet" "rds1" {
 	vpc_id = "${aws_vpc.vpc.id}"
 	cidr_block = "10.1.4.0/24"
 	map_public_ip_on_launch = false
@@ -148,7 +148,7 @@ resource "aws_subnet" "rds_subnet_1" {
 }
 
 # RDS subnet 2
-resource "aws_subnet" "rds_subnet_2" {
+resource "aws_subnet" "rds2" {
 	vpc_id = "${aws_vpc.vpc.id}"
 	cidr_block = "10.1.5.0/24"
 	map_public_ip_on_launch = false
@@ -160,7 +160,7 @@ resource "aws_subnet" "rds_subnet_2" {
 }
 
 # RDS subnet 3
-resource "aws_subnet" "rds_subnet_3" {
+resource "aws_subnet" "rds3" {
 	vpc_id = "${aws_vpc.vpc.id}"
 	cidr_block = "10.1.6.0/24"
 	map_public_ip_on_launch = false
@@ -174,17 +174,17 @@ resource "aws_subnet" "rds_subnet_3" {
 # Subnet associations with route tables
 resource "aws_route_table_association" "public_association" {
 	subnet_id = "${aws_subnet.public.id}"
-	route_table_id = "${aws_route_table.public_route.id}"
+	route_table_id = "${aws_route_table.public.id}"
 }
 
 resource "aws_route_table_association" "private1_association" {
 	subnet_id = "${aws_subnet.private1.id}"
-	route_table_id = "${aws_route_table.public_route.id}"
+	route_table_id = "${aws_route_table.public.id}"
 }
 
 resource "aws_route_table_association" "private2_association" {
 	subnet_id = "${aws_subnet.private2.id}"
-	route_table_id = "${aws_route_table.public_route.id}"
+	route_table_id = "${aws_route_table.public.id}"
 }
 
 resource "aws_db_subnet_group" "rds_subnetgroup" {
@@ -263,7 +263,7 @@ resource "aws_security_group" "RDS" {
 		from_port = 3306
 		to_port = 3306
 		protocol = "tcp"
-		security_groups = ["${aws_security_group.id.public.id}", "${aws_security_group.private.id}"]
+		security_groups = ["${aws_security_group.public.id}", "${aws_security_group.private.id}"]
 	}
 }
 
@@ -276,9 +276,8 @@ resource "aws_db_instance" "db" {
 	name = "${var.dbname}"
 	username = "${var.dbuser}"
 	password = "${var.dbpassword}"
-	db_subnet_group_name = "${aws_db_subnet_group.rds_subnetgroup.name}"
-	vpc_security_group_ids = ["${aws_security_group.RDS.id}"]
-
+	db_subnet_group_name  = "${aws_db_subnet_group.rds_subnetgroup.name}"
+  	vpc_security_group_ids = ["${aws_security_group.RDS.id}"]
 }
 
 # S3 code bucket
@@ -296,39 +295,37 @@ resource "aws_s3_bucket" "code" {
 # Keypair
 resource "aws_key_pair" "auth" {
 	key_name = "${var.key_name}"
-	public_key = "${file(var.public_key.path)}"
+	public_key = "${file(var.public_key_path)}"
 }
 
 # Master dev server (with the initial code and the ansible playbook)
 resource "aws_instance" "dev" {
-	instance_type "${var.dev_instance_type}"
-	ami = "${var.dev_ami}"
-	tags 
-		Name = "dev"
-	}
+  instance_type = "${var.dev_instance_type}"
+  ami = "${var.dev_ami}"
+  tags {
+    Name = "dev"
+  }
 
-	key_name = "${aws_key_pair.auth.id}"
-	vpc_security_group_ids = ["${aws_security_group.public.id}"]
-	iam_instance_profile = "${aws_iam_instance_profile.s3_access.id}"
-	subnet_id = "${aws_subnet.public.id}"
+  key_name = "${aws_key_pair.auth.id}"
+  vpc_security_group_ids = ["${aws_security_group.public.id}"]
+  iam_instance_profile = "${aws_iam_instance_profile.s3_access.id}"
+  subnet_id = "${aws_subnet.public.id}"
+    
+  
+  provisioner "local-exec" {
+      command = <<EOD
+cat <<EOF > aws_hosts 
+[dev] 
+${aws_instance.dev.public_ip} 
+[dev:vars] 
+s3code=${aws_s3_bucket.code.bucket} 
+EOF
+EOD
+  }
 
-	# Write host and vars to ansible hosts file	
-	provisioner "local-exec" {
-      		command = <<EOD
-		cat <<EOF > aws_hosts 
-		[dev] 
-		${aws_instance.dev.public_ip} 
-		[dev:vars] 
-		s3code=${aws_s3_bucket.code.bucket} 
-		EOF
-		EOD
-  	}	
-
-	# Run the playbook, waiting 6 minutes for the ec2 instance to start
-  	provisioner "local-exec" {
-      		command = "sleep 6m && ansible-playbook -i aws_hosts wordpress.yml"
-  	}
-	
+  provisioner "local-exec" {
+      command = "sleep 6m && ansible-playbook -i aws_hosts wordpress.yml"
+  }
 }
 
 # LoadBalancer
