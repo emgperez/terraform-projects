@@ -324,7 +324,7 @@ resource "aws_instance" "dev" {
 		EOD
   	}	
 
-	# Run the playbook
+	# Run the playbook, waiting 6 minutes for the ec2 instance to start
   	provisioner "local-exec" {
       		command = "sleep 6m && ansible-playbook -i aws_hosts wordpress.yml"
   	}
