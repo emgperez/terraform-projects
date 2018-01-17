@@ -430,12 +430,18 @@ resource "aws_autoscaling_group" "asg" {
 	}
 	
 	lifecycle {
+		# Create new autoscaling group before this one is destroyed
 		create_before_destroy = true
 	}
 }
 
 # Route53 records
 # Primary zone
+resource "aws_route53_zone" "primary" {
+	Name = "${var.domain_name}.com"
+	delegation_set_id = "${var.delegation_set}"
+}
+
 # www alias
 # dev alias
 # database record
