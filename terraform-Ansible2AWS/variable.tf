@@ -8,3 +8,5 @@ variable "dbpassword" {}
 variable "key_name" {}
 variable "public_key_path" {}
 variable "domain_name" {}
+variable "dev_instance_type" {}
+variable "dev_ami" {}
