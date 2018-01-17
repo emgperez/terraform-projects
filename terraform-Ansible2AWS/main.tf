@@ -11,20 +11,20 @@ resource "aws_iam_instance_profile" "s3_access" {
 }
 
 resource "aws_iam_role_policy" "s3_access_policy" {
-	name = "s3_access_policy"
-	role = "${aws_iam_role.s3_access.id}"
-	policy = <<EOF
-	{
-    		"Version": "2012-10-17",
-    		"Statement": [
-        	   {
-            		"Effect": "Allow",
-		        "Action": "s3:*",
-            		"Resource": "*"
-        	   }  
-    		]
-	}
-	EOF
+    name = "s3_access_policy"
+    role = "${aws_iam_role.s3_access.id}"
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
 }
 
 resource "aws_iam_role" "s3_access" {
@@ -119,7 +119,7 @@ resource "aws_subnet" "private2" {
 resource "aws_vpc_endpoint" "private-s3" {
 	vpc_id = "${aws_vpc.vpc.id}"
 	service_name = "com.amazonaws.${var.aws_region}.s3"
-	poute_table_ids = ["${aws_vpc.vpc.main_route_table_id}", "${aws_route_table.public.id}"]
+	route_table_ids = ["${aws_vpc.vpc.main_route_table_id}", "${aws_route_table.public.id}"]
 	policy = <<POLICY
 	{
     "Statement": [
@@ -225,7 +225,7 @@ resource "aws_security_group" "public" {
 		from_port = 0
 		to_port = 0
 		protocol = "-1" # Any protocol
-		cidr_block = ["0.0.0.0/0"]
+		cidr_blocks = ["0.0.0.0/0"]
 	}	
 }
 
@@ -435,7 +435,7 @@ resource "aws_autoscaling_group" "asg" {
 # Route53 records
 # Primary zone
 resource "aws_route53_zone" "primary" {
-	Name = "${var.domain_name}.com"
+	name = "${var.domain_name}.com"
 	delegation_set_id = "${var.delegation_set}"
 }
 
