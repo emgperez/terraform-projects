@@ -444,7 +444,7 @@ resource "aws_route53_zone" "primary" {
 
 # www alias to point to ELB
 resource "aws_route53_record" "www" {
-	zone_id = "${aws_route_53_zone.primary.zone_id}"
+	zone_id = "${aws_route53_zone.primary.zone_id}"
 	name = "www.${var.domain_name}.com"
 	type = "A" # Alias
 
@@ -457,7 +457,17 @@ resource "aws_route53_record" "www" {
 }
 
 
-# dev alias
+# dev record to point to development instance
+resource "aws_route53_record" "dev" {
+	zone_id = "${aws_route53_zone.primary.zone_id}"
+	name = "dev.${var.domain_name}.com"
+	type = "A"
+	ttl = "300"
+	records = ["${aws_instance.dev.public_ip}"]
+
+}
+
+
 # database record
 
 
