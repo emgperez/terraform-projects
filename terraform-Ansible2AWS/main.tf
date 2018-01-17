@@ -406,6 +406,7 @@ resource "aws_launch_configuration" "lc" {
 
 # Autoscaling group
 
+
 # Route53 records
 # Primary zone
 # www alias
