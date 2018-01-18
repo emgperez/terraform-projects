@@ -5,7 +5,7 @@ provider "aws" {
 
 # EC2 instance configuration
 resource "aws_instance" "hello-instance" {
-	ami = "ami-9bf712f4"
+	ami = "ami-b73b63a0"
 	instance_type = "t2.micro"
 	
 	tags {
