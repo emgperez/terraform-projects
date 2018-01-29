@@ -13,28 +13,11 @@ resource "aws_subnet" "public" {
   cidr_block = "10.0.1.0/24"
 }
 
-# Security group
-resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
-  description = "Allow HTTP traffic"
-  vpc_id      = "${aws_vpc.my_vpc.id}"
-
-  # Inbound rules
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Outbound rules
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+# Call application module (security group + EC2 instance)
+module "mighty_trousers" {
+  source = ".modules/application"
 }
+
 
 # EC2 instance configuration
 resource "aws_instance" "hello-update-instance" {
@@ -66,11 +49,4 @@ resource "aws_instance" "slave-instance" {
   }
 
   # depends_on = ["aws_instance.master-instance"]
-}
-
-resource "aws_instance" "mighty-trousers" {
-  ami                    = "ami-5652ce39"
-  instance_type          = "t2.micro"
-  subnet_id              = "${aws_subnet.public.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_http.id}"]
 }
