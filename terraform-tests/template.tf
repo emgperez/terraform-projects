@@ -23,3 +23,15 @@ resource "aws_instance" "hello-update-instance" {
   }
 }
 
+resource "aws_instance" "master-instance" {
+  ami		= "ami-5652ce39"
+  instance_type	= "t2.micro"
+  subnet_id 	= "${aws_subnet.public.id}"
+}
+
+resource "aws_instance" "slave-instance" {
+  ami           = "ami-5652ce39"
+  instance_type = "t2.micro"
+  subnet_id = "${aws_subnet.public.id}"
+  depends_on = ["aws_instance.master-instance"]
+}
