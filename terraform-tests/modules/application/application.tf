@@ -33,7 +33,12 @@ resource "aws_instance" "app-server" {
   instance_type          = "t2.micro"
   subnet_id              = "${var.subnet_id}"
   vpc_security_group_ids = ["${aws_security_group.allow_http.id}"]
+
   tags {
     Name = "${var.name}"
   }
+}
+
+output "hostname" {
+  value = "${aws_instance.app-server.private_dns}"
 }
