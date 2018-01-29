@@ -9,18 +9,17 @@ resource "aws_vpc" "my_vpc" {
 
 # Public subnet
 resource "aws_subnet" "public" {
-	vpc_id = "${aws_vpc.my_vpc.id}"
-	cidr_block = "10.0.1.0/24"
-	
+  vpc_id     = "${aws_vpc.my_vpc.id}"
+  cidr_block = "10.0.1.0/24"
 }
 
 # EC2 instance configuration
-# resource "aws_instance" "hello-instance" {
-#  ami           = "ami-5652ce39"
-#  instance_type = "t2.micro"
-#
-#  tags {
-#    Name = "hello-update_instance"
-#  }
-#}
+resource "aws_instance" "hello-update-instance" {
+  ami           = "ami-5652ce39"
+  instance_type = "t2.micro"
+
+  tags {
+    Name = "hello-update-instance"
+  }
+}
 
