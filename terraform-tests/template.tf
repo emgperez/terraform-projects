@@ -33,5 +33,11 @@ resource "aws_instance" "slave-instance" {
   ami           = "ami-5652ce39"
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.public.id}"
-  depends_on = ["aws_instance.master-instance"]
+  tags {
+    master_hostname = "${aws_instance.master-instance.private_dns}"
+  }
+  lifecycle {
+    ignore_changes = ["tags"] # Don't update slave instance if master instance is recreated
+  }
+  # depends_on = ["aws_instance.master-instance"]
 }
