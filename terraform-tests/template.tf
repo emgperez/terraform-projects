@@ -15,7 +15,7 @@ resource "aws_subnet" "public" {
 
 # Call application module (security group + EC2 instance)
 module "mighty_trousers" {
-  source = ".modules/application"
+  source = "./modules/application"
 }
 
 
