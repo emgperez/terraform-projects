@@ -1,23 +1,23 @@
 # Application module
 
 resource "aws_security_group" "allow_http" {
-  name = "allow_http"
+  name        = "allow_http"
   description = "Allow HTTP traffic"
-  vpc_id = "${aws_vpc.my_vpc.id}"
+  vpc_id      = "${aws_vpc.my_vpc.id}"
 
   # Inbound rules
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Outbound rules
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
