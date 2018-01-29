@@ -15,9 +15,11 @@ resource "aws_subnet" "public" {
 
 # Call application module (security group + EC2 instance)
 module "mighty_trousers" {
-  source = "./modules/application"
+  source    = "./modules/application"
+  vpc_id    = "${aws_vpc.my_vpc.id}"
+  subnet_id = "${aws_subnet.public.id}"
+  name      = "MightyTrousers"
 }
-
 
 # EC2 instance configuration
 resource "aws_instance" "hello-update-instance" {
