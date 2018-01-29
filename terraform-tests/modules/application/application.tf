@@ -1,4 +1,10 @@
-# Application module
+#--Application module
+
+# Variables to be used when calling the module
+variable "vpc_id" {}
+
+variable "subnet_id" {}
+variable "name" {}
 
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"
