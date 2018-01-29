@@ -7,9 +7,9 @@ variable "subnet_id" {}
 variable "name" {}
 
 resource "aws_security_group" "allow_http" {
-  name        = "allow_http"
+  name        = "${var.name} allow_http"
   description = "Allow HTTP traffic"
-  vpc_id      = "${aws_vpc.my_vpc.id}"
+  vpc_id      = "${var.vpc_id}"
 
   # Inbound rules
   ingress {
@@ -28,9 +28,12 @@ resource "aws_security_group" "allow_http" {
   }
 }
 
-resource "aws_instance" "mighty-trousers" {
+resource "aws_instance" "app-server" {
   ami                    = "ami-5652ce39"
   instance_type          = "t2.micro"
-  subnet_id              = "${aws_subnet.public.id}"
+  subnet_id              = "${var.subnet_id}"
   vpc_security_group_ids = ["${aws_security_group.allow_http.id}"]
+  tags {
+    Name = "${var.name}"
+  }
 }
