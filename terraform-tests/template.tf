@@ -15,10 +15,11 @@ resource "aws_subnet" "public" {
 
 # Call application module (security group + EC2 instance)
 module "mighty_trousers" {
-  source    = "./modules/application"
-  vpc_id    = "${aws_vpc.my_vpc.id}"
-  subnet_id = "${aws_subnet.public.id}"
-  name      = "MightyTrousers"
+  source      = "./modules/application"
+  vpc_id      = "${aws_vpc.my_vpc.id}"
+  subnet_id   = "${aws_subnet.public.id}"
+  name        = "MightyTrousers"
+  environment = "${var.environment}"
 }
 
 # EC2 instance configuration
