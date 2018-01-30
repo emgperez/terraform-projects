@@ -20,6 +20,7 @@ module "mighty_trousers" {
   subnet_id   = "${aws_subnet.public.id}"
   name        = "MightyTrousers"
   environment = "${var.environment}"
+  extra_sgs   = ["${aws_security_group.default.id}"]
 }
 
 # Default security group
