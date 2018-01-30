@@ -1,10 +1,9 @@
 #--Application module
 
-# Variables to be used when calling the module
-variable "vpc_id" {}
-
-variable "subnet_id" {}
-variable "name" {}
+# Variables to be used when calling the module (moved to variables file)
+# variable "vpc_id" {}
+# variable "subnet_id" {}
+# variable "name" {}
 
 resource "aws_security_group" "allow_http" {
   name        = "${var.name} allow_http"
@@ -30,7 +29,7 @@ resource "aws_security_group" "allow_http" {
 
 resource "aws_instance" "app-server" {
   ami                    = "ami-5652ce39"
-  instance_type          = "t2.micro"
+  instance_type          = "${lookup(var.instance_type, var.environment)}"
   subnet_id              = "${var.subnet_id}"
   vpc_security_group_ids = ["${aws_security_group.allow_http.id}"]
 
