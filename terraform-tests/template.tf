@@ -21,13 +21,6 @@ module "mighty_trousers" {
   name      = "MightyTrousers"
 }
 
-module "crazy_foods" {
-  soruce    = "./modules/application"
-  vpc_id    = "${aws_vpc.my_vpc.id}"
-  subnet_id = "${aws_subnet.public.id}"
-  name      = "CrazyFoods ${module.mighty_trousers.hostname}"
-}
-
 # EC2 instance configuration
 resource "aws_instance" "hello-update-instance" {
   ami           = "ami-5652ce39"
