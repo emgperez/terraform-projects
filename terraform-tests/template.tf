@@ -22,6 +22,20 @@ module "mighty_trousers" {
   environment = "${var.environment}"
 }
 
+# Default security group
+resource "aws_security_group" "default" {
+  name        = "Default SG"
+  description = "Allow SSH access"
+  vpc_id      = "${aws_vpc.my_vpc.id}"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # EC2 instance configuration
 resource "aws_instance" "hello-update-instance" {
   ami           = "ami-5652ce39"
