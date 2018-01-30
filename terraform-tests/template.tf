@@ -20,6 +20,7 @@ module "mighty_trousers" {
   subnet_id   = "${aws_subnet.public.id}"
   name        = "MightyTrousers"
   environment = "${var.environment}"
+  # Collection of extra security groups (taken from variables.tf)
   extra_sgs   = ["${aws_security_group.default.id}"]
 }
 
