@@ -88,3 +88,11 @@ resource "aws_key_pair" "terraform" {
   key_name = "terraform"
   public_key = "${file("./id_rsa.pub")}"
 }
+
+# S3 bucket policy
+resource "aws_iam_role_policy" "s3-assets-all" {
+  name = "s3assets@@all"
+  role = "${aws_iam_role.app-production.id}"
+ policy = "${file("policies/s3assets@@all.json")}"
+
+}
