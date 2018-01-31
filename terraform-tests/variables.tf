@@ -44,3 +44,13 @@ variable "instance_type" {
 variable "extra_sgs" {
   default = []
 }
+
+# DNS server (google's)
+variable "external_nameserver" { default = "8.8.8.8" }
+variable "extra_packages" {
+  description = "Additional packages to install for particular module"
+  default = {
+    MightyTrousers = "wget bind-utils"
+  }
+}
+
