@@ -82,3 +82,9 @@ resource "aws_instance" "slave-instance" {
 data "aws_vpc" "management_layer" {
   id = "vpc-c35aedeb"
 }
+
+# Upload public SSH key from its file (template application -> file() function)
+resource "aws_key_pair" "terraform" {
+  key_name = "terraform"
+  public_key = "${file("./id_rsa.pub")}"
+}
