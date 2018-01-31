@@ -27,6 +27,12 @@ resource "aws_security_group" "allow_http" {
   }
 }
 
+# AMI data source
+data "aws_ami" "app-ami" {
+  most_recent = true
+  owners = ["self"]
+}
+
 resource "aws_instance" "app-server" {
   ami                    = "ami-5652ce39"
   instance_type          = "${lookup(var.instance_type, var.environment)}"
