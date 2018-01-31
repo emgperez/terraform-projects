@@ -69,3 +69,8 @@ resource "aws_instance" "slave-instance" {
 
   # depends_on = ["aws_instance.master-instance"]
 }
+
+# VPC created manually from AWS
+data "aws_vpc" "management_layer" {
+  id = "vpc-c35aedeb"
+}
