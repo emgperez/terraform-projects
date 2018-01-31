@@ -4,7 +4,14 @@ provider "aws" {
 
 # VPC
 resource "aws_vpc" "my_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "${var.vpc_cidr}"
+}
+
+# VPC peering
+resource "aws_vpc_peering_connection" "my_vpc_management" {
+  peer_vpc_id = "${data.aws_vpc.management_layer.id}"
+  vpc_id      = "${aws_vpc.my_vpc.id}"
+  auto_accept = true
 }
 
 # Public subnet
@@ -20,8 +27,9 @@ module "mighty_trousers" {
   subnet_id   = "${aws_subnet.public.id}"
   name        = "MightyTrousers"
   environment = "${var.environment}"
+
   # Collection of extra security groups (taken from variables.tf)
-  extra_sgs   = ["${aws_security_group.default.id}"]
+  extra_sgs = ["${aws_security_group.default.id}"]
 }
 
 # Default security group
