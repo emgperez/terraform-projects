@@ -48,3 +48,12 @@ resource "aws_instance" "app-server" {
 output "hostname" {
   value = "${aws_instance.app-server.private_dns}"
 }
+
+data "template_file" "user_data" {
+  template = "${file("${path.module}/user_data.sh.tpl")}"
+
+  vars {
+    packages = "${var.extra_packages}"
+    nameserver = "${var.external_nameserver}"
+  }
+}
