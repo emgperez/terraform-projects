@@ -57,4 +57,9 @@ data "template_file" "user_data" {
     packages = "${var.extra_packages}"
     nameserver = "${var.external_nameserver}"
   }
+
+  # Don't destroy the server if the user data changes
+  lifecycle {
+    ignore_changes = ["user_data"]
+  }
 }
