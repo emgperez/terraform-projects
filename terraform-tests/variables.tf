@@ -47,9 +47,11 @@ variable "extra_sgs" {
 
 # DNS server (google's)
 variable "external_nameserver" { default = "8.8.8.8" }
+
 variable "extra_packages" {
   description = "Additional packages to install for particular module"
   default = {
+    bae = "wget"
     MightyTrousers = "wget bind-utils"
   }
 }
