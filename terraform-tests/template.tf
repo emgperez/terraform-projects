@@ -96,3 +96,7 @@ resource "aws_iam_role_policy" "s3-assets-all" {
  policy = "${file("policies/s3assets@@all.json")}"
 
 }
+
+output "mighty_trousers_public_ip" {
+  value = "${module.mighty_trousers.public_ip}"  
+}
