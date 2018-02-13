@@ -63,3 +63,7 @@ data "template_file" "user_data" {
     ignore_changes = ["user_data"]
   }
 }
+
+output "public_ip" {
+  value = "${aws_instance.app-server.public_ip}"  
+}
