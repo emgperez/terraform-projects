@@ -16,8 +16,8 @@ resource "aws_vpc_peering_connection" "my_vpc_management" {
 
 # Public subnet
 resource "aws_subnet" "public" {
-  vpc_id     = "${aws_vpc.my_vpc.id}"
-  cidr_block = "10.0.1.0/24"
+  vpc_id                  = "${aws_vpc.my_vpc.id}"
+  cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 }
 
@@ -86,18 +86,22 @@ data "aws_vpc" "management_layer" {
 
 # Upload public SSH key from its file (template application -> file() function)
 resource "aws_key_pair" "terraform" {
-  key_name = "terraform"
+  key_name   = "terraform"
   public_key = "${file("./id_rsa.pub")}"
+}
+
+# Igw
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "${aws_vpc.my_vpc.id}"
 }
 
 # S3 bucket policy
 resource "aws_iam_role_policy" "s3-assets-all" {
-  name = "s3assets@@all"
-  role = "${aws_iam_role.app-production.id}"
- policy = "${file("policies/s3assets@@all.json")}"
-
+  name   = "s3assets@@all"
+  role   = "${aws_iam_role.app-production.id}"
+  policy = "${file("policies/s3assets@@all.json")}"
 }
 
 output "mighty_trousers_public_ip" {
-  value = "${module.mighty_trousers.public_ip}"  
+  value = "${module.mighty_trousers.public_ip}"
 }
