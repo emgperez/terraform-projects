@@ -29,6 +29,9 @@ module "mighty_trousers" {
   name        = "MightyTrousers"
   environment = "${var.environment}"
 
+  # Keypair from the root template
+  keypair = "${aws_key_pair.terraform.key_name}"
+
   # Collection of extra security groups (taken from variables.tf)
   extra_sgs = ["${aws_security_group.default.id}"]
 }
