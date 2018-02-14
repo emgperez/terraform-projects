@@ -95,6 +95,16 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.my_vpc.id}"
 }
 
+# Default Route Table with the internet gateway
+resource "aws_default_route_table" "default_routing" {
+  default_route_table_id = "${aws_vpc.my_vpc.default_route_table_id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.gw.id}"
+  }
+}
+
 # S3 bucket policy
 resource "aws_iam_role_policy" "s3-assets-all" {
   name   = "s3assets@@all"
