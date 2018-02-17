@@ -44,6 +44,11 @@ resource "aws_instance" "app-server" {
   # Use keypair from template
   key_name = "${var.keypair}"
 
+  # Provisioner for ansible inventory
+  provisioner "local-exec" {
+    command = "echo ${self.public_ip} >> inventory"
+  }
+
   tags {
     Name = "${var.name}"
   }
