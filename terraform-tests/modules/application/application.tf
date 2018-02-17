@@ -46,7 +46,8 @@ resource "aws_instance" "app-server" {
 
   # Provisioner for ansible inventory
   provisioner "local-exec" {
-    command = "echo ${self.public_ip} >> inventory"
+    #command = "echo ${self.public_ip} >> inventory"
+    command = "sed -i '/\\[app-server\\]/a ${self.public_ip}' inventory"
   }
 
   tags {
