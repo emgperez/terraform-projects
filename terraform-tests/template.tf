@@ -21,6 +21,14 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 }
 
+# Kubernetes pod
+resource "kubernetes_resource" "mykubpod" {
+  cluster    = "${kubernetes_cluster.main.cluster}"
+  collection = "pods"
+  name       = "mykubpod"
+  content    = "${file("mypod.yml")}"
+}
+
 # Call application module (security group + EC2 instance)
 module "mighty_trousers" {
   source      = "./modules/application"
