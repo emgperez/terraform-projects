@@ -53,6 +53,9 @@ resource "aws_instance" "app-server" {
   tags {
     Name = "${var.name}"
   }
+
+  # Count the instances
+  count = "${var.instance_count}"
 }
 
 output "hostname" {
