@@ -42,6 +42,9 @@ module "mighty_trousers" {
 
   # Collection of extra security groups (taken from variables.tf)
   extra_sgs = ["${aws_security_group.default.id}"]
+
+  # Instance count (2 instances)
+  instance_count = 2
 }
 
 # Default security group
