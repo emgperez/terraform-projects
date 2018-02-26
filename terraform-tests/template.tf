@@ -14,12 +14,28 @@ resource "aws_vpc_peering_connection" "my_vpc_management" {
   auto_accept = true
 }
 
-# Public subnet
+# Public subnets
 resource "aws_subnet" "public" {
   vpc_id                  = "${aws_vpc.my_vpc.id}"
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 }
+
+resource "aws_subnet" "public-1" {
+  vpc_id                  = "${aws_vpc.my_vpc.id}"
+  availability_zone	  = "eu-central-1a"
+  cidr_block              = "${lookup(var.subnet_cidrs, "eu-central-1a-public")}"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "public-2" {
+  vpc_id                  = "${aws_vpc.my_vpc.id}"
+  availability_zone       = "eu-central-1b"
+  cidr_block              = "${lookup(var.subnet_cidrs, "eu-central-1b-public")}"
+  map_public_ip_on_launch = true
+}
+
+
 
 # Kubernetes pod
 resource "kubernetes_resource" "mykubpod" {
